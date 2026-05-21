@@ -14,18 +14,18 @@ export default function App() {
     loading: loadingProducts,
     error: errorProducts,
     refetch: refetchProducts,
-  } = useFetch('/products');
+  } = useFetch('/api/products');
 
   const {
     data: categories,
     loading: loadingCategories,
-  } = useFetch('/categories');
+  } = useFetch('/api/categories');
 
   async function handleDelete(id, name) {
     if (!window.confirm(`¿Eliminar "${name}"? Esta acción no se puede deshacer.`)) return;
 
     try {
-      await apiRequest(`/products/${id}`, 'DELETE');
+      await apiRequest(`/api/products/${id}`, 'DELETE');
       refetchProducts();
     } catch (err) {
       alert(`Error al eliminar: ${err.message}`);
