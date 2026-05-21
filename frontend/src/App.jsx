@@ -8,27 +8,24 @@ import AddProductForm from './components/AddProductForm.jsx';
 import StatsBar from './components/StatsBar.jsx';
 import styles from './App.module.css';
 
-// 🔥 BASE URL CENTRALIZADA
-const BASE_URL = import.meta.env.VITE_API_URL;
-
 export default function App() {
   const {
     data: products,
     loading: loadingProducts,
     error: errorProducts,
     refetch: refetchProducts,
-  } = useFetch(`${BASE_URL}/products`);
+  } = useFetch('/products');
 
   const {
     data: categories,
     loading: loadingCategories,
-  } = useFetch(`${BASE_URL}/categories`);
+  } = useFetch('/categories');
 
   async function handleDelete(id, name) {
     if (!window.confirm(`¿Eliminar "${name}"? Esta acción no se puede deshacer.`)) return;
 
     try {
-      await apiRequest(`${BASE_URL}/products/${id}`, 'DELETE');
+      await apiRequest(`/products/${id}`, 'DELETE');
       refetchProducts();
     } catch (err) {
       alert(`Error al eliminar: ${err.message}`);
