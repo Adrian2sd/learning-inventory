@@ -2,7 +2,7 @@ node_modules/
 dist/
 
 # Variables de entorno — NUNCA subir a GitHub
-# .env.example sí se sube (no tiene datos reales)
+.env.example 
 .env
 .env.local
 .env.production
