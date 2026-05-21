@@ -1,0 +1,17 @@
+{
+  "name": "learning-inventory-backend",
+  "version": "1.0.0",
+  "description": "API REST para el sistema de inventario con Neon PostgreSQL",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "dev": "node --watch server.js",
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "@neondatabase/serverless": "^0.10.4",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2"
+  }
+}
