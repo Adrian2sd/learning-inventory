@@ -1,42 +1,35 @@
 // ============================================================
 // App.jsx
-// Componente raíz de la aplicación
-//
-// Patrón: este componente es el "coordinador"
-//   - Carga los datos con useFetch
-//   - Pasa datos y callbacks a los hijos
-//   - Los hijos no saben cómo funciona la API
 // ============================================================
 
 import { useFetch, apiRequest } from './hooks/useApi.js';
-import ProductTable  from './components/ProductTable.jsx';
+import ProductTable from './components/ProductTable.jsx';
 import AddProductForm from './components/AddProductForm.jsx';
-import StatsBar      from './components/StatsBar.jsx';
-import styles        from './App.module.css';
+import StatsBar from './components/StatsBar.jsx';
+import styles from './App.module.css';
+
+// 🔥 BASE URL CENTRALIZADA
+const BASE_URL = import.meta.env.VITE_API_URL;
 
 export default function App() {
-  // useFetch ejecuta GET /api/products al montar el componente
-  // y cada vez que llamemos a refetchProducts
   const {
-    data:    products,
+    data: products,
     loading: loadingProducts,
-    error:   errorProducts,
+    error: errorProducts,
     refetch: refetchProducts,
-  } = useFetch('/api/products');
+  } = useFetch(`${BASE_URL}/products`);
 
-  // Cargamos categorías para el formulario de nuevo producto
   const {
-    data:    categories,
+    data: categories,
     loading: loadingCategories,
-  } = useFetch('/api/categories');
+  } = useFetch(`${BASE_URL}/categories`);
 
-  // Handler para eliminar producto — recibe id y nombre para confirmación
   async function handleDelete(id, name) {
     if (!window.confirm(`¿Eliminar "${name}"? Esta acción no se puede deshacer.`)) return;
 
     try {
-      await apiRequest(`/api/products/${id}`, 'DELETE');
-      refetchProducts(); // Refrescamos la lista tras borrar
+      await apiRequest(`${BASE_URL}/products/${id}`, 'DELETE');
+      refetchProducts();
     } catch (err) {
       alert(`Error al eliminar: ${err.message}`);
     }
@@ -46,7 +39,7 @@ export default function App() {
 
   return (
     <div className={styles.app}>
-      {/* Header */}
+
       <header className={styles.header}>
         <div className={styles.headerInner}>
           <div>
@@ -54,8 +47,11 @@ export default function App() {
               <span className={styles.logoAccent}>▸</span>
               learning-inventory
             </h1>
-            <p className={styles.subtitle}>Sistema de inventario · PostgreSQL + Express + React</p>
+            <p className={styles.subtitle}>
+              Sistema de inventario · PostgreSQL + Express + React
+            </p>
           </div>
+
           <div className={styles.dbBadge}>
             <span className={styles.dbDot}></span>
             Neon PostgreSQL
@@ -63,18 +59,14 @@ export default function App() {
         </div>
       </header>
 
-      {/* Main */}
       <main className={styles.main}>
 
-        {/* Stats */}
         {!loading && products && categories && (
           <StatsBar products={products} categories={categories} />
         )}
 
-        {/* Layout de dos columnas */}
         <div className={styles.layout}>
 
-          {/* Columna izquierda: formulario */}
           <aside className={styles.sidebar}>
             <AddProductForm
               categories={categories}
@@ -82,13 +74,12 @@ export default function App() {
             />
           </aside>
 
-          {/* Columna derecha: tabla */}
           <section className={styles.content}>
+
             <div className={styles.sectionHeader}>
               <h2 className={styles.sectionTitle}>Inventario</h2>
             </div>
 
-            {/* Estado de carga */}
             {loading && (
               <div className={styles.state}>
                 <div className={styles.spinner}></div>
@@ -96,18 +87,16 @@ export default function App() {
               </div>
             )}
 
-            {/* Estado de error */}
             {errorProducts && !loading && (
               <div className={styles.errorState}>
                 <p>⚠ Error al cargar productos</p>
                 <code>{errorProducts}</code>
                 <p className={styles.hint}>
-                  Asegúrate de que el backend está corriendo en <code>localhost:3001</code>
+                  Revisa que el backend esté desplegado en Render
                 </p>
               </div>
             )}
 
-            {/* Tabla de productos */}
             {!loading && !errorProducts && (
               <ProductTable
                 products={products}
@@ -115,6 +104,7 @@ export default function App() {
                 onRefresh={refetchProducts}
               />
             )}
+
           </section>
         </div>
       </main>
